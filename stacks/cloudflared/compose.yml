@@ -1,0 +1,12 @@
+services:
+  cloudflared:
+    extends:
+      file: ${TEMPLATES_PATH}
+      service: default
+    image: erisamoe/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    network_mode: host
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+      - TZ=${TZ}

@@ -1,0 +1,18 @@
+services:
+  pyload-ng:
+    extends:
+      file: ${TEMPLATES_PATH}
+      service: default
+    image: lscr.io/linuxserver/pyload-ng:latest
+    container_name: pyload-ng
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./data:/config
+      - /mnt/data/downloads:/downloads
+    ports:
+      - 8000:8000
+      - 9666:9666 #optional
+    restart: unless-stopped

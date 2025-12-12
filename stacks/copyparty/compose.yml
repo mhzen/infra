@@ -1,0 +1,24 @@
+services:
+  copyparty:
+    extends:
+      file: ${TEMPLATES_PATH}
+      service: default
+    image: copyparty/im:latest
+    container_name: copyparty
+    user: "1000:1000"
+    ports:
+      - 3923:3923
+    volumes:
+      - ./data:/cfg:z
+      - /mnt/data:/w:z
+    environment:
+      LD_PRELOAD: /usr/lib/libmimalloc-secure.so.2
+      PYTHONUNBUFFERED: 1
+      TZ: ${TZ}
+    stop_grace_period: 15s
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q 127.0.0.1:3923/?reset=/._"]
+      interval: 1m
+      timeout: 2s
+      retries: 5
+      start_period: 15s

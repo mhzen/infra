@@ -1,0 +1,13 @@
+services:
+  glances:
+    extends:
+      file: ${TEMPLATES_PATH}
+      service: default
+    image: nicolargo/glances:latest
+    pid: host
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - "GLANCES_OPT=-w"
+      - TZ=${TZ}

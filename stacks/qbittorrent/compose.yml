@@ -1,0 +1,22 @@
+services:
+  qbittorrent:
+    extends:
+      file: ${TEMPLATES_PATH}
+      service: default
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jakarta
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+      - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest
+    volumes:
+      - ./data:/config
+      - /mnt/data/downloads:/downloads
+      - /mnt/data/media:/media
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp

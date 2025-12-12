@@ -1,0 +1,14 @@
+include:
+    - ${INCLUDE_PATH}/copyparty/compose.yml
+    - ${INCLUDE_PATH}/homer/compose.yml
+    - path: ${INCLUDE_PATH}/cloudflared/compose.yml
+      env_file: ${INCLUDE_PATH}/cloudflared/.env
+    - ${INCLUDE_PATH}/glances/compose.yml
+    - path: ${INCLUDE_PATH}/navidrome/compose.yml
+      env_file: ${INCLUDE_PATH}/navidrome/.env
+    - ${INCLUDE_PATH}/qbittorrent/compose.yml
+    - path: ${INCLUDE_PATH}/samba/compose.yml
+      env_file: ${INCLUDE_PATH}/samba/.env
+    - ${INCLUDE_PATH}/radicale/compose.yml
+    - ${INCLUDE_PATH}/pyload/compose.yml
+    - ${INCLUDE_PATH}/miniflux/compose.yml
