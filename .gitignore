@@ -1,3 +1,2 @@
-stacks/*/data/
+data/
 .env
-accounts.cfg

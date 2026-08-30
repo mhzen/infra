@@ -1,14 +1,73 @@
-include:
-    - ${INCLUDE_PATH}/copyparty/compose.yml
-    - ${INCLUDE_PATH}/homer/compose.yml
-    - path: ${INCLUDE_PATH}/cloudflared/compose.yml
-      env_file: ${INCLUDE_PATH}/cloudflared/.env
-    - ${INCLUDE_PATH}/glances/compose.yml
-    - path: ${INCLUDE_PATH}/navidrome/compose.yml
-      env_file: ${INCLUDE_PATH}/navidrome/.env
-    - ${INCLUDE_PATH}/qbittorrent/compose.yml
-    - path: ${INCLUDE_PATH}/samba/compose.yml
-      env_file: ${INCLUDE_PATH}/samba/.env
-    - ${INCLUDE_PATH}/radicale/compose.yml
-    - ${INCLUDE_PATH}/pyload/compose.yml
-    - ${INCLUDE_PATH}/miniflux/compose.yml
+services:
+  copyparty:
+    image: copyparty/im:latest
+    container_name: copyparty
+    user: "1000:1000"
+    ports:
+      - 3923:3923
+    volumes:
+      - ./data/copyparty:/cfg:z
+      - /mnt/warehouse:/w:z
+    environment:
+      LD_PRELOAD: /usr/lib/libmimalloc-secure.so.2
+      PYTHONUNBUFFERED: 1
+    stop_grace_period: 15s
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q 127.0.0.1:3923/?reset=/._"]
+      interval: 1m
+      timeout: 2s
+      retries: 5
+      start_period: 15s
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Jakarta
+      - USER=${TR_USER}
+      - PASS=${TR_PASS}
+    volumes:
+      - ./data/transmission:/config
+      - ./mnt/warehouse/downloads:/downloads
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    user: 1000:1000
+    ports:
+      - "4533:4533"
+    restart: unless-stopped
+    environment:
+      - ND_LASTFM_ENABLED=true
+      - ND_LASTFM_APIKEY=${ND_LASTFM_APIKEY}
+      - ND_LASTFM_SECRET=${ND_LASTFM_SECRET}
+      - ND_LASTFM_SCROBBLEFIRSTARTISTONLY=true
+    volumes:
+      - "./data/navidrome:/data"
+      - "./mnt/warehouse/music:/music:ro"
+
+  zeroclaw:
+    image: ghcr.io/zeroclaw-labs/zeroclaw:debian
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:42617:42617"      # gateway, host loopback only
+    volumes:
+      - ./data:/zeroclaw
+    environment:
+      # host selects the container interface; allow_public_bind acknowledges
+      # the non-loopback listener and silences the startup warning.
+      - ZEROCLAW_gateway__host=0.0.0.0
+      - ZEROCLAW_gateway__allow_public_bind=true
+    healthcheck:
+      test: ["CMD", "zeroclaw", "status", "--format=exit-code"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

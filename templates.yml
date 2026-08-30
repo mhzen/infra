@@ -1,9 +1,0 @@
-services:
-  default:
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges=true
-    logging:
-      options:
-        max-size: "5m"
-        max-file: "3"
