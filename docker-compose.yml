@@ -62,7 +62,7 @@ services:
       - "8642:8642"   # gateway API
       - "9119:9119"   # dashboard (only reached when HERMES_DASHBOARD=1)
     volumes:
-      - ~/.hermes:/opt/data
+      - ./data/hermes:/opt/data
     environment:
       - HERMES_DASHBOARD=1
       # Uncomment to forward specific env vars instead of using .env file:
