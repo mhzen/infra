@@ -53,22 +53,44 @@ services:
       - "./data/navidrome:/data"
       - "/mnt/warehouse/music:/music:ro"
 
-  zeroclaw:
-    image: ghcr.io/zeroclaw-labs/zeroclaw:debian
-    container_name: zeroclaw
+  hermes:
+    image: nousresearch/hermes-agent:latest
+    container_name: hermes
     restart: unless-stopped
+    command: gateway run
     ports:
-      - "42617:42617"      # gateway, host loopback only
+      - "8642:8642"   # gateway API
+      - "9119:9119"   # dashboard (only reached when HERMES_DASHBOARD=1)
     volumes:
-      - ./data/zeroclaw:/zeroclaw
+      - ~/.hermes:/opt/data
     environment:
-      # host selects the container interface; allow_public_bind acknowledges
-      # the non-loopback listener and silences the startup warning.
-      - ZEROCLAW_gateway__host=0.0.0.0
-      - ZEROCLAW_gateway__allow_public_bind=true
-    healthcheck:
-      test: ["CMD", "zeroclaw", "status", "--format=exit-code"]
-      interval: 60s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      - HERMES_DASHBOARD=1
+      # Uncomment to forward specific env vars instead of using .env file:
+      # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+
+  # zeroclaw:
+  #   image: ghcr.io/zeroclaw-labs/zeroclaw:debian
+  #   container_name: zeroclaw
+  #   restart: unless-stopped
+  #   ports:
+  #     - "42617:42617"      # gateway, host loopback only
+  #   volumes:
+  #     - ./data/zeroclaw:/zeroclaw
+  #   environment:
+  #     # host selects the container interface; allow_public_bind acknowledges
+  #     # the non-loopback listener and silences the startup warning.
+  #     - ZEROCLAW_gateway__host=0.0.0.0
+  #     - ZEROCLAW_gateway__allow_public_bind=true
+  #   healthcheck:
+  #     test: ["CMD", "zeroclaw", "status", "--format=exit-code"]
+  #     interval: 60s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 10s
