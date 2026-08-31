@@ -30,7 +30,7 @@ services:
       - PASS=${TR_PASS}
     volumes:
       - ./data/transmission:/config
-      - ./mnt/warehouse/downloads:/downloads
+      - /mnt/warehouse/downloads:/downloads
     ports:
       - 9091:9091
       - 51413:51413
@@ -51,7 +51,7 @@ services:
       - ND_LASTFM_SCROBBLEFIRSTARTISTONLY=true
     volumes:
       - "./data/navidrome:/data"
-      - "./mnt/warehouse/music:/music:ro"
+      - "/mnt/warehouse/music:/music:ro"
 
   zeroclaw:
     image: ghcr.io/zeroclaw-labs/zeroclaw:debian
