@@ -55,6 +55,7 @@ services:
 
   zeroclaw:
     image: ghcr.io/zeroclaw-labs/zeroclaw:debian
+    container_name: zeroclaw
     restart: unless-stopped
     ports:
       - "127.0.0.1:42617:42617"      # gateway, host loopback only
