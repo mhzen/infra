@@ -59,7 +59,7 @@ services:
     ports:
       - "127.0.0.1:42617:42617"      # gateway, host loopback only
     volumes:
-      - ./data:/zeroclaw
+      - ./data/zeroclaw:/zeroclaw
     environment:
       # host selects the container interface; allow_public_bind acknowledges
       # the non-loopback listener and silences the startup warning.
