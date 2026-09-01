@@ -64,6 +64,8 @@ services:
     volumes:
       - ./data/hermes:/opt/data
     environment:
+      - HERMES_UID=${1000:-10000}
+      - HERMES_GID=${1000:-10000}
       - HERMES_DASHBOARD=1
       # Uncomment to forward specific env vars instead of using .env file:
       # - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
